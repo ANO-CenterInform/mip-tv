@@ -1,0 +1,25 @@
+{% extends "base.twig" %}
+
+{% block main %}
+    <div class="max-w-screen-lg mx-auto flex flex-wrap md:flex-no-wrap mb-5 md:mb-8">
+        <h1 class="page-title">
+            {% if term_page.title %}{{ term_page.title }}{% else %}{{ title }}{% endif %}</h1>
+    </div>
+    {% if term_page.meta('opisanie') %}
+        <div class="max-w-screen-lg mx-auto py-4 md:py-8">
+            <div class="text-grey-300 md:w-3/4 text-lg">{{ term_page.meta('opisanie') }}</div>
+        </div>
+    {% endif %}
+    <div class="max-w-screen-lg mx-auto">
+        {% block content %}
+            <div class="flex flex-wrap justify-between -mx-4">
+                {% for post in posts %}
+                    {% include ['tease-'~post.post_type~'.twig', 'tease.twig'] %}
+                {% endfor %}
+            </div>
+            {% include 'partial/pagination.twig' with { pagination: posts.pagination({show_all: false, mid_size: 3, end_size: 2}) } %}
+        {% endblock %}
+
+    </div>
+{% endblock %}
+

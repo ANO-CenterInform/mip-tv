@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Timber;
+
 class MipTv{
 
     private static $initiated = false;
@@ -23,6 +25,7 @@ class MipTv{
         self::add_acf_field();
 
         flush_rewrite_rules(false);
+        Timber::$locations = __DIR__.'/views';
 
     }
 
@@ -62,7 +65,7 @@ class MipTv{
                 'hierarchical'        => false,
                 'supports'            => [ 'title','thumbnail', 'revisions', 'custom-fields' ],
                 'taxonomies'          => ['video_categories'],
-                'has_archive'         => false,
+                'has_archive'         => true,
                 'query_var'           => true,
             ] );
         }
@@ -150,7 +153,6 @@ class MipTv{
 
             ]);
         }
-
     }
 
 }
