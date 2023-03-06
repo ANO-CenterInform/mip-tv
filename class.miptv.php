@@ -1,4 +1,5 @@
 <?php
+declare( strict_types = 1 );
 
 use Timber\Timber;
 
@@ -23,6 +24,9 @@ class MipTv{
         self::register_post_types();
         self::register_taxonomies();
         self::add_acf_field();
+
+        add_action( 'updated_post_meta', array( 'MipTv', 'update_video' ), 10, 3 );
+        add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueue_scripts'), 10, 3 );
 
         flush_rewrite_rules(false);
         Timber::$locations = __DIR__.'/views';
@@ -63,7 +67,7 @@ class MipTv{
                 'menu_icon'           => 'dashicons-format-video',
                 'capability_type'   => 'post',
                 'hierarchical'        => false,
-                'supports'            => [ 'title','thumbnail', 'revisions', 'custom-fields' ],
+                'supports'            => [ 'title', 'revisions', 'custom-fields' ],
                 'taxonomies'          => ['video_categories'],
                 'has_archive'         => true,
                 'query_var'           => true,
@@ -129,6 +133,14 @@ class MipTv{
                         'required' => 1,
                     ],
                     [
+                        'key' => 'field_video_thumbnail',
+                        'label' => 'Изображение',
+                        'name' => 'video_thumbnail',
+                        'type' => 'image',
+                        'required' => 1,
+
+                    ],
+                    [
                         'key' => 'field_video_categories',
                         'label' => 'Категория',
                         'name' => 'video_categories',
@@ -139,7 +151,25 @@ class MipTv{
                         'required' => 1,
                         'add_term' => 1,
                         'ui' => 1
-                    ]
+                    ],
+                    [
+                        'key' => 'field_video_description',
+                        'label' => 'Описание',
+                        'name' => 'video_description',
+                        'type' => 'wysiwyg',
+                        'toolbar' => 'basic',
+                        'media_upload' => 0,
+                        'required' => 1,
+
+                    ],
+                    [
+                        'key' => 'field_video_embed_code',
+                        'label' => 'Embed code',
+                        'name' => 'video_embed_code',
+                        'type' => 'test',
+                        'read_only' => 1,
+                        'disabled' => 1,
+                    ],
                 ],
                 'location' => [
                     [
@@ -155,4 +185,65 @@ class MipTv{
         }
     }
 
+    public static function update_video( $meta_id, $post_id, $meta_key='', $meta_value='' )
+    {
+        // Stop if not the correct meta key
+        if ( $meta_key != 'video_url') {
+            return false;
+        }
+        $video_url = get_post_meta($post_id, 'video_url', 1);
+        update_post_meta( $post_id, 'video_embed_code', self::determineVideoUrlType($video_url));
+    }
+
+    public static function determineVideoUrlType($url)
+    {
+
+        $yt_rx = '/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/';
+        $has_match_youtube = preg_match($yt_rx, $url, $yt_matches);
+
+        $vm_rx = '/(https?:\/\/)?(www\.)?(player\.)?vimeo\.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/';
+        $has_match_vimeo = preg_match($vm_rx, $url, $vm_matches);
+
+        $rutube_rx = '/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:rutube\.ru))(\/video\/)([\w\-]+)?\/$/';
+        $has_match_rutube = preg_match($rutube_rx, $url, $rutube_matches);
+
+
+        //Then we want the video id which is:
+        if($has_match_youtube) {
+            $video_id = $yt_matches[5];
+            $type = 'youtube';
+        }
+        elseif($has_match_vimeo) {
+            $video_id = $vm_matches[5];
+            $type = 'vimeo';
+        }
+        elseif($has_match_rutube) {
+            $video_id = $rutube_matches[5];
+            $type = 'rutube';
+        }
+        else {
+            $video_id = 0;
+            $type = 'none';
+        }
+
+
+        $data['video_id'] = $video_id;
+        $data['video_type'] = $type;
+
+        return $data;
+
+    }
+
+    public static function enqueue_scripts()
+    {
+        wp_enqueue_script(
+            'mip-tv-script',
+            plugin_dir_url(__FILE__) . 'dist/assets/main.js',
+            false,
+            false,
+            true,
+        );
+
+        wp_enqueue_style('mip-tv-style', plugin_dir_url(__FILE__) . 'dist/assets/index.css', array(), '0.1.0', 'all');
+    }
 }

@@ -3,8 +3,23 @@
 {% block main %}
   <div class="container mx-auto mb-5 md:mb-8">
     {% block content %}
+        <h1 class="page-title text-left">{{ post.title }}</h1>
+        {{ dump(post.meta('video_embed_code')) }}
+        <iframe
+                width="720"
+                height="405"
+                {% if post.meta('video_embed_code').video_type == 'rutube' %}
+                src="https://rutube.ru/play/embed/{{ post.meta('video_embed_code').video_id }}"
+                {% elseif post.meta('video_embed_code').video_type == 'youtube' %}
+                    src="https://www.youtube.com/embed/{{ post.meta('video_embed_code').video_id }}"
+                {% endif %}
+                frameBorder="0"
+                allow="clipboard-write; autoplay"
+                webkitAllowFullScreen
+                mozallowfullscreen
+                allowFullScreen>
 
-      hello
+        </iframe>
     {% endblock %}
   </div>
 {% endblock %}
