@@ -166,7 +166,7 @@ class MipTv{
                         'key' => 'field_video_embed_code',
                         'label' => 'Embed code',
                         'name' => 'video_embed_code',
-                        'type' => 'test',
+                        'type' => 'text',
                         'read_only' => 1,
                         'disabled' => 1,
                     ],
@@ -180,7 +180,7 @@ class MipTv{
                         ],
                     ],
                 ],
-
+                'show_in_rest' => true
             ]);
         }
     }
