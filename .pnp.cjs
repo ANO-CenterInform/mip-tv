@@ -28,9 +28,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["@kucrut/vite-for-wp", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:0.5.2"],\
             ["autoprefixer", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:10.4.13"],\
             ["postcss", "npm:8.4.21"],\
+            ["rollup", "npm:3.18.0"],\
             ["tailwindcss", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:3.2.7"],\
             ["typescript", "patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"],\
             ["vite", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:4.1.4"]\
@@ -241,28 +241,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@gar-promisify-npm-1.1.3-ac1a325862-4059f790e2.zip/node_modules/@gar/promisify/",\
           "packageDependencies": [\
             ["@gar/promisify", "npm:1.1.3"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@kucrut/vite-for-wp", [\
-        ["npm:0.5.2", {\
-          "packageLocation": "./.yarn/cache/@kucrut-vite-for-wp-npm-0.5.2-839f15beaa-0f745eaf72.zip/node_modules/@kucrut/vite-for-wp/",\
-          "packageDependencies": [\
-            ["@kucrut/vite-for-wp", "npm:0.5.2"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:0.5.2", {\
-          "packageLocation": "./.yarn/__virtual__/@kucrut-vite-for-wp-virtual-1c8c966a20/0/cache/@kucrut-vite-for-wp-npm-0.5.2-839f15beaa-0f745eaf72.zip/node_modules/@kucrut/vite-for-wp/",\
-          "packageDependencies": [\
-            ["@kucrut/vite-for-wp", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:0.5.2"],\
-            ["@types/vite", null],\
-            ["vite", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:4.1.4"]\
-          ],\
-          "packagePeers": [\
-            "@types/vite",\
-            "vite"\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1367,9 +1345,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["mip-tv", "workspace:."],\
-            ["@kucrut/vite-for-wp", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:0.5.2"],\
             ["autoprefixer", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:10.4.13"],\
             ["postcss", "npm:8.4.21"],\
+            ["rollup", "npm:3.18.0"],\
             ["tailwindcss", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:3.2.7"],\
             ["typescript", "patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"],\
             ["vite", "virtual:7921ab2a4ef8256c23c44b1f26357e84a9473e855af4640a3555307f2c7002b2688f324e726252ac77bfe844e29841df3fa19ca66fa8c8f54153b494e4f80a32#npm:4.1.4"]\

@@ -27,6 +27,7 @@ class MipTv{
 
         add_action( 'updated_post_meta', array( 'MipTv', 'update_video' ), 10, 3 );
         add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueue_scripts'), 10, 3 );
+        add_filter( 'rest_video_query', array('MipTv', 'video_meta_request_params'), 99, 2 );
 
         flush_rewrite_rules(false);
         Timber::$locations = __DIR__.'/views';
@@ -163,9 +164,17 @@ class MipTv{
 
                     ],
                     [
-                        'key' => 'field_video_embed_code',
-                        'label' => 'Embed code',
-                        'name' => 'video_embed_code',
+                        'key' => 'field_video_type',
+                        'label' => 'Video Type',
+                        'name' => 'video_type',
+                        'type' => 'text',
+                        'read_only' => 1,
+                        'disabled' => 1,
+                    ],
+                    [
+                        'key' => 'field_video_id',
+                        'label' => 'Video ID',
+                        'name' => 'video_id',
                         'type' => 'text',
                         'read_only' => 1,
                         'disabled' => 1,
@@ -192,7 +201,8 @@ class MipTv{
             return false;
         }
         $video_url = get_post_meta($post_id, 'video_url', 1);
-        update_post_meta( $post_id, 'video_embed_code', self::determineVideoUrlType($video_url));
+        update_post_meta( $post_id, 'video_type', self::determineVideoUrlType($video_url)['video_type']);
+        update_post_meta( $post_id, 'video_id', self::determineVideoUrlType($video_url)['video_id']);
     }
 
     public static function determineVideoUrlType($url)
@@ -207,8 +217,6 @@ class MipTv{
         $rutube_rx = '/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:rutube\.ru))(\/video\/)([\w\-]+)?\/$/';
         $has_match_rutube = preg_match($rutube_rx, $url, $rutube_matches);
 
-
-        //Then we want the video id which is:
         if($has_match_youtube) {
             $video_id = $yt_matches[5];
             $type = 'youtube';
@@ -225,7 +233,6 @@ class MipTv{
             $video_id = 0;
             $type = 'none';
         }
-
 
         $data['video_id'] = $video_id;
         $data['video_type'] = $type;
@@ -244,6 +251,16 @@ class MipTv{
             true,
         );
 
-        wp_enqueue_style('mip-tv-style', plugin_dir_url(__FILE__) . 'dist/assets/index.css', array(), '0.1.0', 'all');
+        wp_enqueue_style('mip-tv-style', plugin_dir_url(__FILE__) . 'dist/assets/style.css', array(), false, 'all');
     }
+
+    public static function video_meta_request_params( $args, $request )
+    {
+        $args += array(
+            'meta_key' => $request['meta_key'],
+            'meta_value' => $request['meta_value'],
+            );
+        return $args;
+    }
+
 }

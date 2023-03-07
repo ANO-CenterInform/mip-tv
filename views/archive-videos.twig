@@ -14,7 +14,36 @@
         {% block content %}
             <div class="flex flex-wrap justify-between -mx-4">
                 {% for post in posts %}
-                    {% include ['tease-'~post.post_type~'.twig', 'tease.twig'] %}
+                    <div class="bg-white-100 mx-4 flex flex-col justify-between mb-4 md:mb-0 border border-grey-200">
+                        <div>
+                            <a href="{{ item.link }}" title="{{ item.title }}">
+                                <div class="relative">
+                                    {% if item.thumbnail.src %}
+                                        <picture>
+                                            <source srcset="{{ item.meta('').src|resize(360,249)|towebp }}" type="image/webp">
+                                            <img class="max-w-full" src="{{ item.thumbnail.src|resize(360,249)|tojpg }}" alt="{{ item.thumbnail.alt }}" />
+                                        </picture>
+                                    {% else %}
+                                        <picture>
+                                            <source srcset="{{ options.featured_image_dummy|resize(360,250)|towebp }}" type="image/webp">
+                                            <img src="{{ options.featured_image_dummy|resize(360,250)|tojpg }}" alt="{{ item.title }}">
+                                        </picture>
+                                    {% endif %}
+                                    <svg class="absolute bottom-0 left-0 ml-4" style="margin-bottom: -2px;" width="23"
+                                         height="15" viewBox="0 0 23
+                                15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11.5 0L22.3253 14.25H0.674683L11.5 0Z" fill="white"/>
+                                    </svg>
+                                </div>
+                            </a>
+                            <a href="{{ item.link }}" title="{{ item.title }}"><h2 class="p-4 uppercase font-bold">{{ item.title }}</h2></a>
+                        </div>
+                        <div class="px-4">
+                            <div class="w-16 h-1 border-b-2 border-blue-200 mt-4"></div>
+                            <div class="text-sm mt-4">{{ item.preview.length(10).read_more('') }}</div>
+                        </div>
+                        <div class="p-4 text-sm">{{ item.post_date|date('d.m.Y') }}</div>
+                    </div>
                 {% endfor %}
             </div>
             {% include 'partial/pagination.twig' with { pagination: posts.pagination({show_all: false, mid_size: 3, end_size: 2}) } %}

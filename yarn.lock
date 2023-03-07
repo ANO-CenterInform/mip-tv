@@ -166,15 +166,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kucrut/vite-for-wp@npm:^0.5.2":
-  version: 0.5.2
-  resolution: "@kucrut/vite-for-wp@npm:0.5.2"
-  peerDependencies:
-    vite: ^4.0.1
-  checksum: 0f745eaf723f7599fc756c04cc43132cc4afb91630249624bd42129549750a07c496edf7c82363115ac5e2a3c48ae913161e266b54ceaf38df1b123a2b804536
-  languageName: node
-  linkType: hard
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1188,9 +1179,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mip-tv@workspace:."
   dependencies:
-    "@kucrut/vite-for-wp": ^0.5.2
     autoprefixer: ^10.4.13
     postcss: ^8.4.21
+    rollup: ^3.18.0
     tailwindcss: ^3.2.7
     typescript: ^4.9.3
     vite: ^4.1.4
@@ -1552,7 +1543,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^3.10.0":
+"rollup@npm:^3.10.0, rollup@npm:^3.18.0":
   version: 3.18.0
   resolution: "rollup@npm:3.18.0"
   dependencies:
