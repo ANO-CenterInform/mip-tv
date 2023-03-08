@@ -14,19 +14,14 @@
         {% block content %}
             <div class="flex flex-wrap justify-between -mx-4">
                 {% for post in posts %}
-                    <div class="bg-white-100 mx-4 flex flex-col justify-between mb-4 md:mb-0 border border-grey-200">
+                    <div class="flex flex-col bg-white-100 mx-4 justify-between mb-4 md:mb-0 border border-grey-200">
                         <div>
-                            <a href="{{ item.link }}" title="{{ item.title }}">
+                            <a href="{{ post.link }}" title="{{ post.title }}">
                                 <div class="relative">
-                                    {% if item.thumbnail.src %}
+                                    {% if post.meta('video_thumbnail').url %}
                                         <picture>
-                                            <source srcset="{{ item.meta('').src|resize(360,249)|towebp }}" type="image/webp">
-                                            <img class="max-w-full" src="{{ item.thumbnail.src|resize(360,249)|tojpg }}" alt="{{ item.thumbnail.alt }}" />
-                                        </picture>
-                                    {% else %}
-                                        <picture>
-                                            <source srcset="{{ options.featured_image_dummy|resize(360,250)|towebp }}" type="image/webp">
-                                            <img src="{{ options.featured_image_dummy|resize(360,250)|tojpg }}" alt="{{ item.title }}">
+                                            <source srcset="{{ post.meta('video_thumbnail').url|resize(360,249)|towebp }}" type="image/webp">
+                                            <img class="max-w-full" src="{{ post.meta('video_thumbnail').url|resize(360,249)|tojpg }}" alt="{{ post.meta('video_thumbnail').alt }}" />
                                         </picture>
                                     {% endif %}
                                     <svg class="absolute bottom-0 left-0 ml-4" style="margin-bottom: -2px;" width="23"
@@ -36,13 +31,13 @@
                                     </svg>
                                 </div>
                             </a>
-                            <a href="{{ item.link }}" title="{{ item.title }}"><h2 class="p-4 uppercase font-bold">{{ item.title }}</h2></a>
+                            <h2 class="p-4 uppercase font-bold cursor-pointer" data-video="{{ post.meta('video_id') }}">{{ post.title }}</h2>
                         </div>
                         <div class="px-4">
                             <div class="w-16 h-1 border-b-2 border-blue-200 mt-4"></div>
-                            <div class="text-sm mt-4">{{ item.preview.length(10).read_more('') }}</div>
+                            <div class="text-sm mt-4">{{ post.preview.length(10).read_more('') }}</div>
                         </div>
-                        <div class="p-4 text-sm">{{ item.post_date|date('d.m.Y') }}</div>
+                        <div class="p-4 text-sm">{{ post.post_date|date('d.m.Y') }}</div>
                     </div>
                 {% endfor %}
             </div>
