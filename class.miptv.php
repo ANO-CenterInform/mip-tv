@@ -26,7 +26,7 @@ class MipTv{
         self::add_acf_field();
 
         add_action( 'updated_post_meta', array( 'MipTv', 'update_video' ), 10, 3 );
-        add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueue_scripts'), 10, 3 );
+        add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueue_scripts'), 1, 3 );
         add_filter( 'rest_video_query', array('MipTv', 'video_meta_request_params'), 99, 2 );
 
         flush_rewrite_rules(false);
@@ -168,7 +168,7 @@ class MipTv{
                         'label' => 'Video Type',
                         'name' => 'video_type',
                         'type' => 'text',
-                        'read_only' => 1,
+                        'readonly' => 1,
                         'disabled' => 1,
                     ],
                     [
@@ -176,7 +176,7 @@ class MipTv{
                         'label' => 'Video ID',
                         'name' => 'video_id',
                         'type' => 'text',
-                        'read_only' => 1,
+                        'readonly' => 1,
                         'disabled' => 1,
                     ],
                 ],
