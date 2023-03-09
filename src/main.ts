@@ -1,11 +1,12 @@
 import './style.css'
-import {fetchJSON} from "./fetcher";
+import { fetchJSON } from "./fetcher";
 
 const videoLinks = document.querySelectorAll('[data-video]');
 
 if(videoLinks) {
     Array.from(videoLinks).forEach((link) => {
         link.addEventListener('click', (evt) => {
+            evt.preventDefault();
             const target = evt.target;
             if( target instanceof HTMLElement) {
                 const video_id = target.dataset.video;
