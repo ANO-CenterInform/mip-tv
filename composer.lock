@@ -4,50 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11c4aa6d471c5e84d44989dca09d9aae",
-    "packages": [
+    "content-hash": "64f1e129155cba76eb9139cb5eb2b35e",
+    "packages": [],
+    "packages-dev": [
         {
-            "name": "kucrut/vite-for-wp",
-            "version": "v0.5.2",
+            "name": "deployer/deployer",
+            "version": "v7.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/kucrut/vite-for-wp.git",
-                "reference": "850e04b16b7bebfe6b1a276845d20bd99874fd56"
+                "url": "https://github.com/deployphp/deployer.git",
+                "reference": "61314b16a776da3ba332ee0390e999a361431e52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kucrut/vite-for-wp/zipball/850e04b16b7bebfe6b1a276845d20bd99874fd56",
-                "reference": "850e04b16b7bebfe6b1a276845d20bd99874fd56",
+                "url": "https://api.github.com/repos/deployphp/deployer/zipball/61314b16a776da3ba332ee0390e999a361431e52",
+                "reference": "61314b16a776da3ba332ee0390e999a361431e52",
                 "shasum": ""
             },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
-                "wp-coding-standards/wpcs": "^2.3"
-            },
+            "bin": [
+                "dep"
+            ],
             "type": "library",
-            "autoload": {
-                "files": [
-                    "vite-for-wp.php"
-                ]
-            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0-only"
+                "MIT"
             ],
             "authors": [
                 {
-                    "name": "Dzikri Aziz"
+                    "name": "Anton Medvedev",
+                    "email": "anton@medv.io"
                 }
             ],
-            "description": "Vite integration for WordPress plugins and themes development.",
+            "description": "Deployment Tool",
+            "homepage": "https://deployer.org",
             "support": {
-                "issues": "https://github.com/kucrut/vite-for-wp/issues",
-                "source": "https://github.com/kucrut/vite-for-wp/tree/v0.5.2"
+                "docs": "https://deployer.org/docs",
+                "issues": "https://github.com/deployphp/deployer/issues",
+                "source": "https://github.com/deployphp/deployer"
             },
-            "time": "2022-12-14T14:07:54+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/antonmedv",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-03-01T20:16:58+00:00"
         }
     ],
-    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],

@@ -35,7 +35,7 @@
                         </div>
                         <div class="px-4">
                             <div class="w-16 h-1 border-b-2 border-blue-200 mt-4"></div>
-                            <div class="text-sm mt-4">{{ post.preview.length(10).read_more('') }}</div>
+                            <div class="text-sm mt-4">{{ post.meta('video_description') | truncate(10) }}</div>
                         </div>
                         <div class="p-4 text-sm">{{ post.post_date|date('d.m.Y') }}</div>
                     </div>
