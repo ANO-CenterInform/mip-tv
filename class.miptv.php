@@ -26,6 +26,7 @@ class MipTv{
         self::add_acf_field();
 
         add_action( 'updated_post_meta', array( 'MipTv', 'update_video' ), 10, 3 );
+        add_action( 'wp_after_insert_post', array( 'MipTv', 'video_save' ), 10, 3 );
         add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueue_scripts'), 1, 3 );
         add_filter( 'rest_video_query', array('MipTv', 'video_meta_request_params'), 99, 2 );
 
@@ -200,6 +201,27 @@ class MipTv{
         if ( $meta_key != 'video_url') {
             return false;
         }
+        $video_url = get_post_meta($post_id, 'video_url', 1);
+        update_post_meta( $post_id, 'video_type', self::determineVideoUrlType($video_url)['video_type']);
+        update_post_meta( $post_id, 'video_id', self::determineVideoUrlType($video_url)['video_id']);
+    }
+
+    /**
+     * When save new Video
+     * @param $url
+     * @return array
+     */
+
+    public static function video_save($post_id, $post, $post_before)
+    {
+        if( 'video' !== $post->post_type) {
+            return;
+        }
+
+        if ($post->post_status !== 'publish') {
+            return;
+        }
+
         $video_url = get_post_meta($post_id, 'video_url', 1);
         update_post_meta( $post_id, 'video_type', self::determineVideoUrlType($video_url)['video_type']);
         update_post_meta( $post_id, 'video_id', self::determineVideoUrlType($video_url)['video_id']);
