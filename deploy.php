@@ -15,9 +15,11 @@ add('writable_dirs', []);
 
 // Hosts
 
-host('188.68.217.156')
+host('mosinzh.shamagir.ru')
+    ->set('hostname', '188.68.217.156')
     ->set( 'branch', 'staging' )
     ->set('remote_user', 'shamagir')
+    ->identityFile('~/.ssh/id_rsa')
     ->set('deploy_path', '~/{{application}}');
 
 task( 'deploy:plugin', function () {
