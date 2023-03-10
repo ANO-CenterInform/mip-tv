@@ -1,5 +1,7 @@
 import './style.css'
 import { fetchJSON } from "./fetcher";
+import {openModal} from "./openModal";
+import {updateURL} from "./updateURL";
 
 const videoLinks = document.querySelectorAll('[data-video]');
 
@@ -11,7 +13,10 @@ if(videoLinks) {
             if( target instanceof HTMLElement) {
                 const video_id = target.dataset.video;
                 if(video_id) {
-                    fetchJSON(video_id)
+                    fetchJSON(`/wp-json/wp/v2/video?meta_key=video_id&meta_value=${video_id}`).then(data => {
+                        updateURL(data[0].acf.video_id);
+                        openModal(data)
+                    })
                 }
             }
         })
@@ -23,7 +28,10 @@ const url = window.location.href;
 if (url.includes('?video_id=')) {
     if(url.split('?video_id=')[1]) {
         const video_id = url.split('?video_id=')[1];
-        fetchJSON(video_id);
+        fetchJSON(`/wp-json/wp/v2/video?meta_key=video_id&meta_value=${video_id}`).then(data => {
+            updateURL(data[0].acf.video_id);
+            openModal(data)
+        });
     }
 }
 
