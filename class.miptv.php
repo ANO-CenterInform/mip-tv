@@ -104,7 +104,7 @@ class MipTv{
             "show_admin_column" => false,
             "show_tagcloud" => false,
             "show_in_quick_edit" => true,
-            'show_in_rest'        => false,
+            'show_in_rest'        => true,
             "sort" => false,
             "show_in_graphql" => false,
             'meta_box_cb' => false,
