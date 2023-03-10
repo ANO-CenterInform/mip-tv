@@ -1,7 +1,7 @@
 import './style.css'
-import { fetchJSON } from "./fetcher";
-import {openModal} from "./openModal";
-import {updateURL} from "./updateURL";
+import { fetchJSON } from "./tools/fetcher";
+import {openModal} from "./tools/openModal";
+import {updateURL} from "./tools/updateURL";
 
 const videoLinks = document.querySelectorAll('[data-video]');
 
