@@ -24,11 +24,13 @@ class MipTv{
         self::register_post_types();
         self::register_taxonomies();
         self::add_acf_field();
+        self::addOptionsPage();
 
-        add_action( 'updated_post_meta', array( 'MipTv', 'update_video' ), 10, 3 );
-        add_action( 'wp_after_insert_post', array( 'MipTv', 'video_save' ), 10, 3 );
+        add_action( 'updated_post_meta', array( 'MipTv', 'updateVideo'), 10, 3 );
+        add_action( 'wp_after_insert_post', array( 'MipTv', 'videoSave'), 10, 3 );
         add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueue_scripts'), 1, 3 );
-        add_filter( 'rest_video_query', array('MipTv', 'video_meta_request_params'), 99, 2 );
+        add_filter( 'rest_video_query', array('MipTv', 'video_meta_request_params'), 10, 2 );
+        add_filter( 'body_class', array('MipTv', 'checkIfYTBlocked'), 10, 2 );
 
         flush_rewrite_rules(false);
         Timber::$locations = __DIR__.'/views';
@@ -128,11 +130,18 @@ class MipTv{
                 'title' => 'Поля',
                 'fields' => [
                     [
-                        'key' => 'field_video_url',
-                        'label' => 'Адрес видео',
-                        'name' => 'video_url',
+                        'key' => 'field_youtube_url',
+                        'label' => 'Адрес видео на Youtube',
+                        'name' => 'video_youtube_url',
                         'type' => 'text',
                         'required' => 1,
+                    ],
+                    [
+                        'key' => 'field_rutube_url',
+                        'label' => 'Адрес видео на Rutube',
+                        'name' => 'video_rutube_url',
+                        'type' => 'text',
+                        'required' => 0,
                     ],
                     [
                         'key' => 'field_video_thumbnail',
@@ -165,14 +174,6 @@ class MipTv{
 
                     ],
                     [
-                        'key' => 'field_video_type',
-                        'label' => 'Video Type',
-                        'name' => 'video_type',
-                        'type' => 'text',
-                        'readonly' => 1,
-                        'disabled' => 1,
-                    ],
-                    [
                         'key' => 'field_video_id',
                         'label' => 'Video ID',
                         'name' => 'video_id',
@@ -192,27 +193,60 @@ class MipTv{
                 ],
                 'show_in_rest' => true
             ]);
+            acf_add_local_field_group([
+
+                'key' => 'group_video_settings',
+                'title' => 'Настройки Видеораздела',
+                'fields' => [
+                    [
+                        'key' => 'field_block_youtube',
+                        'label' => 'Заблокировать YouTube',
+                        'name' => 'block_youtube',
+                        'type' => 'true_false',
+                        'default' => false,
+                        'ui' => 1
+                    ],
+                ],
+                'location' => [
+                    [
+                        [
+                            'param' => 'options_page',
+                            'operator' => '==',
+                            'value' => 'video-settings',
+                        ],
+                    ],
+                ],
+                'show_in_rest' => true
+            ]);
         }
     }
 
-    public static function update_video( $meta_id, $post_id, $meta_key='', $meta_value='' )
+    /**
+     * Update Metafield when new Video updated
+     * @param $meta_id
+     * @param $post_id
+     * @param string $meta_key
+     * @param string $meta_value
+     * @return false
+     */
+    public static function updateVideo($meta_id, $post_id, $meta_key='', $meta_value='' )
     {
         // Stop if not the correct meta key
         if ( $meta_key != 'video_url') {
             return false;
         }
-        $video_url = get_post_meta($post_id, 'video_url', 1);
-        update_post_meta( $post_id, 'video_type', self::determineVideoUrlType($video_url)['video_type']);
-        update_post_meta( $post_id, 'video_id', self::determineVideoUrlType($video_url)['video_id']);
+
+        self::updateMetaFields($post_id);
     }
 
     /**
      * When save new Video
-     * @param $url
+     * @param $post_id
+     * @param $post
+     * @param $post_before
      * @return array
      */
-
-    public static function video_save($post_id, $post, $post_before)
+    public static function videoSave($post_id, $post, $post_before)
     {
         if( 'video' !== $post->post_type) {
             return;
@@ -222,42 +256,48 @@ class MipTv{
             return;
         }
 
-        $video_url = get_post_meta($post_id, 'video_url', 1);
-        update_post_meta( $post_id, 'video_type', self::determineVideoUrlType($video_url)['video_type']);
-        update_post_meta( $post_id, 'video_id', self::determineVideoUrlType($video_url)['video_id']);
+        self::updateMetaFields($post_id);
     }
 
+    /**
+     * Helper to update metafields
+     * @param $post_id
+     */
+    private static function updateMetaFields($post_id)
+    {
+        $video_youtube_url = get_post_meta($post_id, 'video_youtube_url', 1);
+        $video_rutube_url = get_post_meta($post_id, 'video_rutube_url', 1);
+        update_post_meta( $post_id, 'video_id', [
+            "youtube" => self::determineVideoUrlType($video_youtube_url)['video_id'],
+            "rutube" => self::determineVideoUrlType($video_rutube_url)['video_id']
+        ]);
+    }
+
+    /**
+     * Transform video url to Id
+     * @param $url
+     * @return array
+     */
     public static function determineVideoUrlType($url)
     {
 
         $yt_rx = '/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/';
         $has_match_youtube = preg_match($yt_rx, $url, $yt_matches);
 
-        $vm_rx = '/(https?:\/\/)?(www\.)?(player\.)?vimeo\.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/';
-        $has_match_vimeo = preg_match($vm_rx, $url, $vm_matches);
-
-        $rutube_rx = '/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:rutube\.ru))(\/video\/)([\w\-]+)?\/$/';
+        $rutube_rx = '/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:rutube\.ru))(\/video\/)([\w\-]+)\/?$/';
         $has_match_rutube = preg_match($rutube_rx, $url, $rutube_matches);
 
         if($has_match_youtube) {
             $video_id = $yt_matches[5];
-            $type = 'youtube';
-        }
-        elseif($has_match_vimeo) {
-            $video_id = $vm_matches[5];
-            $type = 'vimeo';
         }
         elseif($has_match_rutube) {
             $video_id = $rutube_matches[5];
-            $type = 'rutube';
         }
         else {
             $video_id = 0;
-            $type = 'none';
         }
 
         $data['video_id'] = $video_id;
-        $data['video_type'] = $type;
 
         return $data;
 
@@ -283,6 +323,41 @@ class MipTv{
             'meta_value' => $request['meta_value'],
             );
         return $args;
+    }
+
+    /**
+     * Add options page for Video section
+     *
+     * @return void
+     */
+
+    private static function addOptionsPage(): void
+    {
+        if( function_exists('acf_add_options_page') ) {
+
+            acf_add_options_page(array(
+                'page_title'    => 'Настройки Видеораздела',
+                'menu_title'    => 'Видеораздел',
+                'menu_slug'     => 'video-settings',
+                'capability'    => 'edit_posts',
+                'redirect'      => false
+            ));
+        }
+    }
+
+    /**
+     * Check if Youtube is blocked in settings and add class to Body
+     */
+
+    public static function checkIfYTBlocked($classes): array
+    {
+        $blocked = get_field('field_block_youtube', 'options');
+
+        if($blocked) {
+            $classes[] = 'yt-blocked';
+        }
+
+        return $classes;
     }
 
 }
