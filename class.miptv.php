@@ -21,14 +21,14 @@ class MipTv{
     {
         self::$initiated = true;
 
-        self::register_post_types();
-        self::register_taxonomies();
-        self::add_acf_field();
+        self::registerPostTypes();
+        self::registerTaxonomies();
+        self::addAcfField();
         self::addOptionsPage();
 
         add_action( 'updated_post_meta', array( 'MipTv', 'updateVideo'), 10, 3 );
         add_action( 'wp_after_insert_post', array( 'MipTv', 'videoSave'), 10, 3 );
-        add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueue_scripts'), 1, 3 );
+        add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueueScripts'), 1, 3 );
         add_filter( 'rest_video_query', array('MipTv', 'video_meta_request_params'), 10, 2 );
         add_filter( 'body_class', array('MipTv', 'checkIfYTBlocked'), 10, 2 );
 
@@ -42,7 +42,7 @@ class MipTv{
      *
      * @return void
      */
-    public static function register_post_types():void
+    public static function registerPostTypes():void
     {
         if(!post_type_exists('video')) {
             register_post_type( 'video', [
@@ -84,7 +84,7 @@ class MipTv{
      *
      * @return void
      */
-    public static function register_taxonomies()
+    public static function registerTaxonomies()
     {
 
         $labels = [
@@ -119,8 +119,7 @@ class MipTv{
      *
      * @return void
      */
-
-    public static function add_acf_field():void
+    public static function addAcfField():void
     {
         if( function_exists('acf_add_local_field_group') )
         {
@@ -294,7 +293,7 @@ class MipTv{
             $video_id = $rutube_matches[5];
         }
         else {
-            $video_id = 0;
+            $video_id = null;
         }
 
         $data['video_id'] = $video_id;
@@ -303,7 +302,7 @@ class MipTv{
 
     }
 
-    public static function enqueue_scripts()
+    public static function enqueueScripts()
     {
         wp_enqueue_script(
             'mip-tv-script',
