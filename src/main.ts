@@ -13,9 +13,9 @@ if(videoLinks) {
             if( target instanceof HTMLElement) {
                 const video_id = target.dataset.video;
                 if(video_id) {
-                    fetchJSON(`/wp-json/wp/v2/video/${video_id}`).then(data => {
-                        updateURL(data.acf.video_id);
-                        openModal(data)
+                    fetchJSON(`/wp-json/wp/v2/video?meta_key=video_hash&meta_value=${video_id}`).then(data => {
+                        updateURL(data[0].acf.video_hash);
+                        openModal(data[0].acf.video_id);
                     })
                 }
             }
@@ -28,9 +28,9 @@ const url = window.location.href;
 if (url.includes('?video_id=')) {
     if(url.split('?video_id=')[1]) {
         const video_id = url.split('?video_id=')[1];
-        fetchJSON(`/wp-json/wp/v2/video?meta_key=video_id&meta_value=${video_id}`).then(data => {
-            updateURL(data[0].acf.video_id);
-            openModal(data[0])
+        fetchJSON(`/wp-json/wp/v2/video?meta_key=video_hash&meta_value=${video_id}`).then(data => {
+            updateURL(data[0].acf.video_hash);
+            openModal(data[0].acf.video_id);
         });
     }
 }

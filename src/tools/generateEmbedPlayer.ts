@@ -9,12 +9,12 @@ type dataObject = {
 export const generateEmbedPlayer = (data: dataObject) => {
     let url = '';
 
-    if(data.rutube) {
+    console.log(data)
+    if(data) {
         url = `https://rutube.ru/play/embed/${data.rutube}?autoplay=1`;
     } else if(data.youtube && !checkYouTubeBlocked) {
         url = `https://www.youtube.com/embed/${data.youtube}?enablejsapi=1&autoplay=1&modestbranding=1&controls=2&showinfo=0&rel=0`;
     }
-
 
         const renderTabs = () => {
             if(data.rutube && data.youtube && !checkYouTubeBlocked) {

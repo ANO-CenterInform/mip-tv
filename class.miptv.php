@@ -180,6 +180,14 @@ class MipTv{
                         'readonly' => 1,
                         'disabled' => 1,
                     ],
+                    [
+                        'key' => 'field_video_hash',
+                        'label' => 'Video Hash',
+                        'name' => 'video_hash',
+                        'type' => 'text',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                    ],
                 ],
                 'location' => [
                     [
@@ -256,6 +264,10 @@ class MipTv{
         }
 
         self::updateMetaFields($post_id);
+
+
+
+        update_post_meta($post_id, 'video_hash', bin2hex(random_bytes(5)));
     }
 
     /**
@@ -267,9 +279,10 @@ class MipTv{
         $video_youtube_url = get_post_meta($post_id, 'video_youtube_url', 1);
         $video_rutube_url = get_post_meta($post_id, 'video_rutube_url', 1);
 
-        $id = $video_youtube_url ?: $video_rutube_url;
-
-        update_post_meta( $post_id, 'video_id', self::determineVideoUrlType($id)['video_id']);
+        update_post_meta( $post_id, 'video_id', [
+            'youtube' => self::determineVideoUrlType($video_youtube_url)['video_id'],
+            'rutube' => self::determineVideoUrlType($video_rutube_url)['video_id']
+        ]);
     }
 
     /**
@@ -348,7 +361,7 @@ class MipTv{
      * Check if Youtube is blocked in settings and add class to Body
      */
 
-    public static function checkIfYTBlocked(): array
+    public static function checkIfYTBlocked(): bool
     {
         return get_field('field_block_youtube', 'options');
 }
