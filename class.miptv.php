@@ -30,7 +30,7 @@ class MipTv{
         add_action( 'wp_after_insert_post', array( 'MipTv', 'videoSave'), 10, 3 );
         add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueueScripts'), 1, 3 );
         add_filter( 'rest_video_query', array('MipTv', 'video_meta_request_params'), 10, 2 );
-        add_filter( 'body_class', array('MipTv', 'checkIfYTBlocked'), 10, 2 );
+        add_filter( 'body_class', array('MipTv', 'setBlockedClass'), 10, 2 );
 
         flush_rewrite_rules(false);
         Timber::$locations = __DIR__.'/views';
@@ -266,10 +266,10 @@ class MipTv{
     {
         $video_youtube_url = get_post_meta($post_id, 'video_youtube_url', 1);
         $video_rutube_url = get_post_meta($post_id, 'video_rutube_url', 1);
-        update_post_meta( $post_id, 'video_id', [
-            "youtube" => self::determineVideoUrlType($video_youtube_url)['video_id'],
-            "rutube" => self::determineVideoUrlType($video_rutube_url)['video_id']
-        ]);
+
+        $id = $video_youtube_url ?: $video_rutube_url;
+
+        update_post_meta( $post_id, 'video_id', self::determineVideoUrlType($id)['video_id']);
     }
 
     /**
@@ -348,9 +348,18 @@ class MipTv{
      * Check if Youtube is blocked in settings and add class to Body
      */
 
-    public static function checkIfYTBlocked($classes): array
+    public static function checkIfYTBlocked(): array
     {
-        $blocked = get_field('field_block_youtube', 'options');
+        return get_field('field_block_youtube', 'options');
+}
+
+    /**
+     * Check if Youtube is blocked in settings and add class to Body
+     */
+
+    public static function setBlockedClass($classes): array
+    {
+        $blocked = self::checkIfYTBlocked();
 
         if($blocked) {
             $classes[] = 'yt-blocked';
