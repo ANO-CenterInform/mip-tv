@@ -11,7 +11,6 @@ export const openModal = (data: any) => {
     modalWrapper.innerHTML = `
             <div class="modal-content relative flex flex-col w-full max-w-screen-md rounded-xl bg-white-100 my-6">
                 <div class="modal-close max-md:top-0 max-md:right-0 z-50" data-dismiss="modal" aria-label="Close"></div>
-                ${generateEmbedPlayer(data.acf)}
                 <div class="p-8">             
                     <date class="block mb-4 text-xl text-blue-200" datetime="${data.date}">${post_date.toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' })}</date>   
                     <h3 class="mb-2 text-3xl">${data.title.rendered}</h3>
@@ -21,6 +20,8 @@ export const openModal = (data: any) => {
             <div>
             `;
     document.body.appendChild(modalWrapper);
+
+    generateEmbedPlayer(data.acf.video_id)
 
     fetchJSON(`/wp-json/wp/v2/video_categories/${data.acf.video_categories}`).then(result => {
         const category = document.createElement('div');

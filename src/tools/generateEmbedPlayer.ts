@@ -1,5 +1,5 @@
 
-import {checkYouTubeBlocked} from "./checkYouTubeBlocked";
+import {isYouTubeBlocked} from "./isYouTubeBlocked";
 
 type dataObject = {
     youtube: string|null,
@@ -7,56 +7,56 @@ type dataObject = {
 }
 
 export const generateEmbedPlayer = (data: dataObject) => {
-    let url = '';
 
-    console.log(data)
-    if(data) {
+    const videoWrapper = document.createElement('div');
+    videoWrapper.classList.add('videoWrapper');
+
+    let url = '';
+    let label = ''
+
+    if(data.rutube) {
         url = `https://rutube.ru/play/embed/${data.rutube}?autoplay=1`;
-    } else if(data.youtube && !checkYouTubeBlocked) {
+        label = 'YouTube';
+    } else if(data.youtube && !isYouTubeBlocked()) {
         url = `https://www.youtube.com/embed/${data.youtube}?enablejsapi=1&autoplay=1&modestbranding=1&controls=2&showinfo=0&rel=0`;
+        label = 'RuTube';
     }
 
-        const renderTabs = () => {
-            if(data.rutube && data.youtube && !checkYouTubeBlocked) {
-                const ytButton = document.createElement('button');
-                ytButton.classList.add('yt');
-                ytButton.innerText = 'YouTube';
-                ytButton.addEventListener('click', () => {
-                    const videoPlayer = document.getElementById('videoPlayer') as HTMLElement;
-                    if(videoPlayer instanceof HTMLElement) {
-                        videoPlayer.setAttribute(
-                            'src',
-                            `https://www.youtube.com/embed/${data.youtube}?enablejsapi=1&autoplay=1&modestbranding=1&controls=2&showinfo=0&rel=0`);
-                    }
-                })
+    const iframe = document.createElement('iframe');
+    iframe.id = 'videoPlayer';
+    iframe.setAttribute('width', '768');
+    iframe.setAttribute('height', '405');
+    iframe.setAttribute('src', url);
+    iframe.setAttribute('allow', "clipboard-write; autoplay; fullscreen");
+    iframe.setAttribute('allowFullScreen', 'allowFullScreen');
 
-                const rtButton = document.createElement('button');
-                rtButton.classList.add('rt');
-                rtButton.innerText = 'RuTube';
+    videoWrapper.appendChild(iframe);
 
-                const videoWrapper = document.querySelector('.videoWrapper') as HTMLElement;
+    if (data.rutube && data.youtube && !isYouTubeBlocked()) {
+        const tabs = document.createElement('div');
+        tabs.classList.add('tabs', 'absolute', 'top-0', 'left-0', 'z-50');
+        const switchButton = document.createElement('button');
+        switchButton.classList.add('bg-white')
+        switchButton.innerText = label;
+        tabs.appendChild(switchButton);
 
-                if(videoWrapper instanceof HTMLElement) {
-                    videoWrapper.append(ytButton);
-                    videoWrapper.append(rtButton);
-                }
+        switchButton.addEventListener('click', (evt) => {
+            const target = evt.target;
+
+            if(label === "YouTube") {
+                iframe.setAttribute('src', `https://www.youtube.com/embed/${data.youtube}?enablejsapi=1&autoplay=1&modestbranding=1&controls=2&showinfo=0&rel=0`);
+                label = "RuTube";
             }
 
-            return 'hello'
+        })
+
+        videoWrapper.appendChild(tabs);
     }
 
-    return `
-            <div class="videoWrapper">
-                ${renderTabs()}
-                <iframe
-                id="videoPlayer"
-                width="768"
-                height="405"
-                src="${url}"
-                allow="clipboard-write; autoplay; fullscreen"
-                allowFullScreen>
-                </iframe>
-            </div>
-            `;
+    const modalClose = document.querySelector('.modal-close') as HTMLElement;
+
+    if(modalClose) {
+        modalClose.after(videoWrapper);
+    }
 };
 

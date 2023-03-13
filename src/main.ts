@@ -15,7 +15,7 @@ if(videoLinks) {
                 if(video_id) {
                     fetchJSON(`/wp-json/wp/v2/video?meta_key=video_hash&meta_value=${video_id}`).then(data => {
                         updateURL(data[0].acf.video_hash);
-                        openModal(data[0].acf.video_id);
+                        openModal(data[0]);
                     })
                 }
             }
@@ -30,7 +30,7 @@ if (url.includes('?video_id=')) {
         const video_id = url.split('?video_id=')[1];
         fetchJSON(`/wp-json/wp/v2/video?meta_key=video_hash&meta_value=${video_id}`).then(data => {
             updateURL(data[0].acf.video_hash);
-            openModal(data[0].acf.video_id);
+            openModal(data[0]);
         });
     }
 }
