@@ -5,6 +5,13 @@ import { updateURL } from "./tools/updateURL";
 
 const videoLinks = document.querySelectorAll('[data-video]');
 
+const applyFetch = (video_id: string) => {
+    fetchJSON(`/wp-json/wp/v2/video?meta_key=video_hash&meta_value=${video_id}`).then(data => {
+        updateURL(data[0].acf.video_hash);
+        openModal(data[0]);
+    });
+}
+
 if(videoLinks) {
     Array.from(videoLinks).forEach((link) => {
         link.addEventListener('click', (evt) => {
@@ -13,10 +20,7 @@ if(videoLinks) {
             if( target instanceof HTMLElement) {
                 const video_id = target.dataset.video;
                 if(video_id) {
-                    fetchJSON(`/wp-json/wp/v2/video?meta_key=video_hash&meta_value=${video_id}`).then(data => {
-                        updateURL(data[0].acf.video_hash);
-                        openModal(data[0]);
-                    })
+                    applyFetch(video_id);
                 }
             }
         })
@@ -28,10 +32,7 @@ const url = window.location.href;
 if (url.includes('?video_id=')) {
     if(url.split('?video_id=')[1]) {
         const video_id = url.split('?video_id=')[1];
-        fetchJSON(`/wp-json/wp/v2/video?meta_key=video_hash&meta_value=${video_id}`).then(data => {
-            updateURL(data[0].acf.video_hash);
-            openModal(data[0]);
-        });
+        applyFetch(video_id);
     }
 }
 

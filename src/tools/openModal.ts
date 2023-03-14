@@ -25,7 +25,7 @@ export const openModal = (data: any) => {
 
     fetchJSON(`/wp-json/wp/v2/video_categories/${data.acf.video_categories}`).then(result => {
         const category = document.createElement('div');
-        category.innerHTML = `<a href="${result.link}" class="px-4 py-2 border border-blue-200 rounded-xl">#${result.name}</a>`;
+        category.innerHTML = `<a href="${result.link}" class="px-4 py-2 border border-blue-200 text-blue-200 rounded-xl hover:text-white hover:bg-blue-400">#${result.name}</a>`;
         const wrapper = modalWrapper.querySelector('.category') as HTMLElement;
         if(wrapper) {
             wrapper.appendChild(category)
