@@ -75,7 +75,7 @@ class MipTv{
                 'supports'            => [ 'title', 'revisions', 'custom-fields' ],
                 'taxonomies'          => ['video_categories'],
                 'has_archive'         => true,
-                'rewrite'             => true,
+                "rewrite" => [ 'slug' => 'tv', 'with_front' => true, ],
                 'query_var'           => true,
             ] );
         }
@@ -104,7 +104,7 @@ class MipTv{
             "show_in_menu" => true,
             "show_in_nav_menus" => true,
             "query_var" => true,
-            "rewrite" => [ 'slug' => 'video', 'with_front' => true, ],
+            "rewrite" => [ 'slug' => 'videos', 'with_front' => true, ],
             "show_admin_column" => false,
             "show_tagcloud" => false,
             "show_in_quick_edit" => true,
