@@ -1,0 +1,52 @@
+{% extends "base.twig" %}
+
+
+{% block main %}
+  <div class="max-w-screen-lg mx-auto flex flex-wrap md:flex-no-wrap py-5 md:py-8">
+    <h1 class="text-3xl uppercase">Вакансии</h1>
+  </div>
+  {% if term_page.meta('opisanie') %}
+    <div class="max-w-screen-lg mx-auto py-4 md:py-8">
+      <div class="text-grey-300 md:w-3/4 text-lg">{{ term_page.meta('opisanie') }}</div>
+    </div>
+  {% endif %}
+  <div class="max-w-screen-lg mx-auto">
+    {% block content %}
+      <div class="video-container grid grid-cols-1 sm:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for post in posts %}
+          <div class="flex flex-col bg-white-100 justify-between md:mb-0 border border-grey-200">
+            <div>
+              <div class="relative cursor-pointer">
+                {% if post.meta('video_thumbnail').url %}
+                  <a href="/video/?video_id={{ post.meta('video_hash') }}" class="relative cursor-pointer">
+                    <picture>
+                      <source media="(max-width: 1023px)" srcset="{{ post.meta('video_thumbnail').url|resize(477,249)|towebp }}" />
+                      <source media="(min-width: 1024px)" srcset="{{ post.meta('video_thumbnail').url|resize(360,249)|towebp }}" />
+                      <img data-video="{{ post.meta('video_hash') }}" class="max-w-full" src="{{ post.meta('video_thumbnail').url|resize(360,249)|tojpg }}" alt="{{ post.meta('video_thumbnail').alt }}" />
+                    </picture>
+                  </a>
+                {% endif %}
+                <svg class="absolute bottom-0 left-0 ml-4" style="margin-bottom: -2px;" width="23"
+                     height="15" viewBox="0 0 23
+                            15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.5 0L22.3253 14.25H0.674683L11.5 0Z" fill="white"/>
+                </svg>
+              </div>
+              <h2 class="p-4 uppercase font-bold cursor-pointer">
+                <a data-video="{{ post.meta('video_hash') }}" href="/video/?video_id={{ post.meta('video_hash') }}">{{ post.title }}</a>
+              </h2>
+            </div>
+            <div class="px-4">
+              <div class="w-16 h-1 border-b-2 border-blue-200 mt-4"></div>
+              <div class="text-sm mt-4">{{ post.meta('video_description') | striptags | truncate(10) }}</div>
+            </div>
+            <div class="p-4 text-sm">{{ post.post_date|date('d.m.Y') }}</div>
+          </div>
+        {% endfor %}
+      </div>
+      {% include 'partial/pagination.twig' with { pagination: posts.pagination({show_all: false, mid_size: 3, end_size: 2}) } %}
+    {% endblock %}
+
+  </div>
+{% endblock %}
+
