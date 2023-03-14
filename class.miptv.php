@@ -27,6 +27,7 @@ class MipTv{
         self::addOptionsPage();
 
         add_action( 'updated_post_meta', array( 'MipTv', 'updateVideo'), 10, 3 );
+        add_action( 'save_post', array( 'MipTv', 'setHash'), 10, 3 );
         add_action( 'wp_after_insert_post', array( 'MipTv', 'videoSave'), 10, 3 );
         add_action( 'wp_enqueue_scripts', array('MipTv', 'enqueueScripts'), 1, 3 );
         add_filter( 'rest_video_query', array('MipTv', 'video_meta_request_params'), 10, 2 );
@@ -74,6 +75,7 @@ class MipTv{
                 'supports'            => [ 'title', 'revisions', 'custom-fields' ],
                 'taxonomies'          => ['video_categories'],
                 'has_archive'         => true,
+                'rewrite'             => true,
                 'query_var'           => true,
             ] );
         }
@@ -102,7 +104,7 @@ class MipTv{
             "show_in_menu" => true,
             "show_in_nav_menus" => true,
             "query_var" => true,
-            "rewrite" => [ 'slug' => 'video_categories', 'with_front' => true, ],
+            "rewrite" => [ 'slug' => 'video', 'with_front' => true, ],
             "show_admin_column" => false,
             "show_tagcloud" => false,
             "show_in_quick_edit" => true,
@@ -251,9 +253,9 @@ class MipTv{
      * @param $post_id
      * @param $post
      * @param $post_before
-     * @return array
+     * @return void
      */
-    public static function videoSave($post_id, $post, $post_before)
+    public static function videoSave($post_id, $post, $post_before): void
     {
         if( 'video' !== $post->post_type) {
             return;
@@ -265,16 +267,14 @@ class MipTv{
 
         self::updateMetaFields($post_id);
 
-
-
-        update_post_meta($post_id, 'video_hash', bin2hex(random_bytes(5)));
     }
 
     /**
      * Helper to update metafields
      * @param $post_id
+     * @return void
      */
-    private static function updateMetaFields($post_id)
+    private static function updateMetaFields($post_id): void
     {
         $video_youtube_url = get_post_meta($post_id, 'video_youtube_url', 1);
         $video_rutube_url = get_post_meta($post_id, 'video_rutube_url', 1);
@@ -290,7 +290,7 @@ class MipTv{
      * @param $url
      * @return array
      */
-    public static function determineVideoUrlType($url)
+    public static function determineVideoUrlType($url): array
     {
 
         $yt_rx = '/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/';
@@ -315,6 +315,9 @@ class MipTv{
 
     }
 
+    /**
+     * Append style and js
+     */
     public static function enqueueScripts()
     {
         wp_enqueue_script(
@@ -328,6 +331,12 @@ class MipTv{
         wp_enqueue_style('mip-tv-style', plugin_dir_url(__FILE__) . 'dist/assets/style.css', array(), false, 'all');
     }
 
+    /**
+     * Add extra request query for REST
+     * @param $args
+     * @param $request
+     * @return array
+     */
     public static function video_meta_request_params( $args, $request )
     {
         $args += array(
@@ -380,5 +389,28 @@ class MipTv{
 
         return $classes;
     }
+
+    /**
+     * Set hash for new video posts
+     * @param $post_id
+     * @param $post
+     * @param $update
+     * @throws Exception
+     */
+    public static function setHash( $post_id, $post, $update ): void
+    {
+        // Only want to set if this is a new post!
+        if ($update) {
+            return;
+        }
+
+        // Only set for post_type = post!
+        if ('video' !== $post->post_type) {
+            return;
+        }
+
+        update_post_meta($post_id, 'video_hash', bin2hex(random_bytes(5)));
+    }
+
 
 }
